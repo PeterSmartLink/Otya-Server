@@ -141,17 +141,17 @@ async function createRoom(request, env, user) {
   const host = await currentPublicIdentity(request, env)
   if (!host) {
     return json({
-      error: 'Choose an OTYA username before starting Anywhere Together.',
+      error: 'Choose an Otya username before starting Anywhere Together.',
       code: 'USERNAME_REQUIRED',
     }, 409)
   }
   if (host.username === inviteUsername) {
-    return json({ error: 'Invite another OTYA user.', code: 'CANNOT_INVITE_SELF' }, 400)
+    return json({ error: 'Invite another Otya user.', code: 'CANNOT_INVITE_SELF' }, 400)
   }
 
   const guest = await lookupUsername(request, env, inviteUsername)
   if (!guest?.username || !guest?.otyaId) {
-    return json({ error: 'OTYA user not found.', code: 'USERNAME_NOT_FOUND' }, 404)
+    return json({ error: 'Otya user not found.', code: 'USERNAME_NOT_FOUND' }, 404)
   }
 
   const roomId = randomToken(16)
@@ -185,7 +185,7 @@ async function joinRoom(request, env, user, roomId) {
 
   const identity = await currentPublicIdentity(request, env)
   if (!identity || identity.username !== room.guest.username) {
-    return json({ error: 'This Together invite belongs to another OTYA account.', code: 'NOT_INVITED' }, 403)
+    return json({ error: 'This Together invite belongs to another Otya account.', code: 'NOT_INVITED' }, 403)
   }
 
   const body = await request.json().catch(() => null)
