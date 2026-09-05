@@ -100,7 +100,7 @@ async function lookupPublicUsername(
   const username = normalizeUsername(usernameQuery)
   if (!validUsername(username)) {
     return json({
-      error: 'Enter a valid OTYA username.',
+      error: 'Enter a valid Otya username.',
       code: 'INVALID_USERNAME',
     }, 400)
   }
@@ -113,7 +113,7 @@ async function lookupPublicUsername(
   `).bind(username).first<Record<string, unknown>>()
 
   if (!user) {
-    return json({ error: 'OTYA user not found.', code: 'USERNAME_NOT_FOUND' }, 404)
+    return json({ error: 'Otya user not found.', code: 'USERNAME_NOT_FOUND' }, 404)
   }
 
   return json({ ok: true, user })
@@ -186,7 +186,7 @@ export async function handleAccountProfile(request: Request, env: Env): Promise<
 
         const owner = await getUserByEmail(env.AUTH_DB, email)
         if (owner && owner.id !== userId) {
-          return json({ error: 'That email is already connected to another OTYA account.', code: 'EMAIL_IN_USE' }, 409)
+          return json({ error: 'That email is already connected to another Otya account.', code: 'EMAIL_IN_USE' }, 409)
         }
 
         if (!currentEmail) {
@@ -217,7 +217,7 @@ export async function handleAccountProfile(request: Request, env: Env): Promise<
             const availableAtMs = changedAt + USERNAME_CHANGE_COOLDOWN_MS
             if (Date.now() < availableAtMs) {
               return json({
-                error: 'Your OTYA username can be changed once every 30 days.',
+                error: 'Your Otya username can be changed once every 30 days.',
                 code: 'USERNAME_CHANGE_COOLDOWN',
                 available_at: new Date(availableAtMs).toISOString(),
               }, 429)
@@ -228,7 +228,7 @@ export async function handleAccountProfile(request: Request, env: Env): Promise<
             SELECT id FROM users WHERE lower(username) = lower(?) LIMIT 1
           `).bind(username).first<{ id: string }>()
           if (owner && owner.id !== userId) {
-            return json({ error: 'That OTYA username is already taken.', code: 'USERNAME_TAKEN' }, 409)
+            return json({ error: 'That Otya username is already taken.', code: 'USERNAME_TAKEN' }, 409)
           }
 
           updates.push('username = ?', "username_changed_at = datetime('now')")
@@ -276,7 +276,7 @@ export async function handleAccountProfile(request: Request, env: Env): Promise<
         await env.AUTH_DB.prepare(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`).bind(...values).run()
       } catch (error) {
         if (uniqueConstraint(error) && 'username' in body) {
-          return json({ error: 'That OTYA username is already taken.', code: 'USERNAME_TAKEN' }, 409)
+          return json({ error: 'That Otya username is already taken.', code: 'USERNAME_TAKEN' }, 409)
         }
         throw error
       }
